@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>Barcode</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  </head>
+  <body>
+    <form id="barcodeForm" action="/barcode/input" method="post">
+        <label for="content">GM66 Input: </label>
+        <input type="text" id="content" name="content">
+        <input type="submit" onclick="submitForm()" value="OK">
+    </form>
+  </body>
+</html>
+
+<script>
+    function submitForm(){
+        $('#barcodeForm').submit(function(e){
+            e.preventDefault();
+            $.ajax({
+                url: '/barcode/input',
+                type: 'post',
+                data: $('#barcodeForm').serialize(),
+                success:function(){
+                    location.reload();
+                }
+            });
+        });
+    }
+    
+</script>
