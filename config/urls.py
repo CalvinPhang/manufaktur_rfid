@@ -20,5 +20,6 @@ from django.urls import path, include
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("rfid.urls")),
-    path("barcode/", include("barcode.urls"))
+    path("barcode/", include("barcode.urls")),
+    path("kanban/", include("kanban.urls"))
 ]

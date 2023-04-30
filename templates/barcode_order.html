@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <title>Order</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  </head>
+  <body>
+    <form id="barcodeForm" action="/kanban/order/input" method="post">
+        <label for="content">Order: </label>
+        <input type="text" id="content" name="content" autofocus="autofocus">
+        <input type="submit" onclick="submitForm()" value="OK">
+    </form>
+    <h3 id="msg"></h3>
+  </body>
+</html>
+
+<script>
+  function submitForm(){
+    $("#barcodeForm").one('submit', function (e) {
+      e.preventDefault();
+
+      $.ajax({
+        url: '/kanban/order/input',
+        type: 'post',
+        data: $('#barcodeForm').serialize(),
+        success:function(data){
+            document.getElementById("barcodeForm").reset();
+            var msg = document.getElementById('msg');
+            msg.innerHTML = data.msg;
+            console.log(data);
+          }
+      });
+
+    });
+  }
+  
+    // function submitForm(){
+    //     $('#barcodeForm').submit(function(e){
+    //         e.preventDefault();
+    //         $.ajax({
+    //             url: '/kanban/order/input',
+    //             type: 'post',
+    //             data: $('#barcodeForm').serialize(),
+    //             success:function(data){
+    //                 document.getElementById("barcodeForm").reset();
+    //                 var msg = document.getElementById('msg');
+    //                 msg.innerHTML = data.msg;
+    //                 console.log(data);
+    //             }
+    //         });
+    //     });
+    // }
+    
+</script>

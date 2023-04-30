@@ -58,7 +58,7 @@ void setup() {
 
 //*****************************************************************************************//
 void loop() {
-  String firstname = "";
+  String product_id = "";
   String lastname = "";
 
   // Prepare key - all keys are set to FFFFFFFFFFFFh at chip delivery from the factory.
@@ -92,7 +92,7 @@ void loop() {
 
   //-------------------------------------------
 
-  Serial.print(F("Name: "));
+  Serial.print(F("Product ID: "));
 
   byte buffer1[18];
 
@@ -120,7 +120,7 @@ void loop() {
     if (buffer1[i] != 32)
     {
       Serial.write(buffer1[i]);
-      firstname += char(buffer1[i]);
+      product_id += char(buffer1[i]);
     }
   }
   Serial.print(" ");
@@ -157,7 +157,7 @@ void loop() {
       HTTPClient http;
       http.begin(client, api_endpoint);
       http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-      String httpRequestData = "reader_id=2&content=" + firstname + " " + lastname;           
+      String httpRequestData = "reader_id=2&content=" + product_id;            
       int httpResponseCode = http.POST(httpRequestData);
       Serial.print("HTTP Response code: ");
       Serial.println(httpResponseCode);
