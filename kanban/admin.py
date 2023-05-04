@@ -76,3 +76,11 @@ class ProductAdmin(admin.ModelAdmin):
     @admin.display(ordering='unit_type__name', description='Unit Type')
     def unit_name(self, obj):
         return obj.unit_type.name
+    
+@admin.register(models.Station)
+class StationAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name", 
+        "instruction"
+    )

@@ -35,13 +35,15 @@ class Products(models.Model):
     product_code = models.CharField(max_length=200)
     unit_type = models.ForeignKey("UnitType", on_delete=models.CASCADE, null=True)
     order = models.ForeignKey("Order", on_delete=models.CASCADE, null=True, blank=True)
-    rfid = models.CharField(max_length=255)
+    rfid = models.CharField(max_length=255, null=True, blank=True)
     time_warehouse = models.DateTimeField(null=True, blank=True)
     time_assy1 = models.DateTimeField(null=True, blank=True)
     time_assy2 = models.DateTimeField(null=True, blank=True)
     time_storage = models.DateTimeField(null=True, blank=True)
     sent = models.DateTimeField(null=True, blank=True)
     
-    
+class Station(models.Model):
+    name = models.CharField(max_length=200)
+    instruction = models.CharField(max_length=200, null=True, blank=True)
 
 

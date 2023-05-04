@@ -28,6 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "10.250.243.43"]
 
+ASSET_ROOT = os.path.join(BASE_DIR, 'asset/')
 
 # Application definition
 
@@ -122,3 +123,10 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'kanban.authentication.CsrfExemptSessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication'
+    ],
+}
