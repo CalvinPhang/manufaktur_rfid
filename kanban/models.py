@@ -9,12 +9,10 @@ class Order(models.Model):
     # supplier = models.CharField(max_length=255)
     # requested_by = models.CharField(max_length=255)
     order_date = models.DateTimeField(auto_now_add=True)
-    # delivery_date = models.DateField()
+    delivery_date = models.DateTimeField(null=True)
 
 class UnitType(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    
-    
     
 class PartType(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -35,8 +33,14 @@ class UnitPartsBom(models.Model):
     
 class Products(models.Model):
     product_code = models.CharField(max_length=200)
-    order = models.ForeignKey("Order", on_delete=models.CASCADE, null=True)
+    unit_type = models.ForeignKey("UnitType", on_delete=models.CASCADE, null=True)
+    order = models.ForeignKey("Order", on_delete=models.CASCADE, null=True, blank=True)
     rfid = models.CharField(max_length=255)
+    time_warehouse = models.DateTimeField(null=True, blank=True)
+    time_assy1 = models.DateTimeField(null=True, blank=True)
+    time_assy2 = models.DateTimeField(null=True, blank=True)
+    time_storage = models.DateTimeField(null=True, blank=True)
+    sent = models.DateTimeField(null=True, blank=True)
     
     
 

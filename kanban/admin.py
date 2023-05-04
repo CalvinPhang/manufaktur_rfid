@@ -63,6 +63,16 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "product_code",
+        "unit_name",
         "order",
-        "rfid"
+        "rfid",
+        "time_warehouse",
+        "time_assy1",
+        "time_assy2",
+        "time_storage",
+        "sent",
     )
+    
+    @admin.display(ordering='unit_type__name', description='Unit Type')
+    def unit_name(self, obj):
+        return obj.unit_type.name

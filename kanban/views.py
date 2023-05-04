@@ -32,6 +32,7 @@ class OrderPost(APIView):
             parts_inventory = PartsInventory.objects.get(part_type=part.part_type)
             parts_inventory.quantity = parts_inventory.quantity - part.part_quantity
             parts_inventory.save()
+        # Create Order  
         order = Order(
             id = dictt["ID"],
             product = unit,
@@ -39,5 +40,19 @@ class OrderPost(APIView):
             order_date = datetime.datetime.now()
         )
         order.save()
+        # Create Product
         return Response({'msg': 'order received'})
+
+class BomProduct(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request, *args, **kwargs):
+        product_code = request.data['product_code']
+        product = Products.objects.get(product_code=product_code)
+        product.time_warehouse = datetime.datetime.now()
+        product.save()
+        parts = UnitPartsBom.objects.filter(unit_type=product.unit_type)
+        data = {}
+        for part in parts:
+            data[part.part_type.name] = part.part_quantity
+        return Response(data)
 
