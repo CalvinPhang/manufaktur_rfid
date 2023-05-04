@@ -14,6 +14,10 @@ class Order(models.Model):
 class UnitType(models.Model):
     name = models.CharField(max_length=255, unique=True)
     
+class UnitStorage(models.Model):
+    unit_type = models.ForeignKey("UnitType", on_delete=models.CASCADE, null=True)
+    quantity = models.IntegerField()
+    
 class PartType(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
@@ -39,6 +43,7 @@ class Products(models.Model):
     time_warehouse = models.DateTimeField(null=True, blank=True)
     time_assy1 = models.DateTimeField(null=True, blank=True)
     time_assy2 = models.DateTimeField(null=True, blank=True)
+    time_inspection = models.DateTimeField(null=True, blank=True)
     time_storage = models.DateTimeField(null=True, blank=True)
     sent = models.DateTimeField(null=True, blank=True)
     

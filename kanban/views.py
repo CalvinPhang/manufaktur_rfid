@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
-from .models import Order, UnitType, PartsInventory, UnitPartsBom, Products, Station
+from .models import Order, UnitType, PartsInventory, UnitPartsBom, Products, Station, UnitStorage
 
 def order_input(request):
     return render(request, 'barcode_order.html')
@@ -81,6 +81,7 @@ class Assy1Instruction(APIView):
     def post(self, request):
         product_code = request.data['product_code']
         product = Products.objects.get(product_code=product_code)
+        product.time_assy1 = datetime.datetime.now()
         unit_type = product.unit_type.name
         if unit_type == "X":
             station = Station.objects.get(name='Assembly 1')
@@ -110,6 +111,7 @@ class Assy2Instruction(APIView):
     def post(self, request):
         product_code = request.data['product_code']
         product = Products.objects.get(product_code=product_code)
+        product.time_assy2 = datetime.datetime.now()
         unit_type = product.unit_type.name
         if unit_type == "X":
             station = Station.objects.get(name='Assembly 2')
@@ -126,19 +128,62 @@ class Assy2Instruction(APIView):
             station.instruction = settings.ASSET_ROOT + 'Z_assy2.png'
             station.save()
             return Response({"msg": "success"})
+
+def inspection(request):
+    return render(request, 'inspection.html')
+
+class InspectionInstruction(APIView):
+    permission_classes = [AllowAny]
+    def get(self, request):
+        station = Station.objects.get(name='Inspection')
+        return Response({"img": station.instruction})
         
+    def post(self, request):
+        product_code = request.data['product_code']
+        product = Products.objects.get(product_code=product_code)
+        product.time_inspection = datetime.datetime.now()
+        unit_type = product.unit_type.name
+        if unit_type == "X":
+            station = Station.objects.get(name='Inspection')
+            station.instruction = settings.ASSET_ROOT + 'X_inspection.png'
+            station.save()
+            return Response({"msg": "success"})
+        elif unit_type == "Y":
+            station = Station.objects.get(name='Inspection')
+            station.instruction = settings.ASSET_ROOT + 'Y_inspection.png'
+            station.save()
+            return Response({"msg": "success"})
+        elif unit_type == "Z":
+            station = Station.objects.get(name='Inspection')
+            station.instruction = settings.ASSET_ROOT + 'Z_inspection.png'
+            station.save()
+            return Response({"msg": "success"})
 
-
-# class Assy2Instruction(APIView):
-#     permission_classes = [AllowAny]
-
-#     def post(self, request):
-#         product_code = request.data['product_code']
-#         product = Products.objects.get(product_code=product_code)
-#         unit_type = product.unit_type.name
-#         if unit_type == "X":
-#             return render(request, 'ProductX.html')
-#         elif unit_type == "Y":
-#             return render(request, 'ProductY.html')
-#         elif unit_type == "Z":
-#             return render(request, 'ProductZ.html')
+class StorageView(APIView):
+    permission_classes = [AllowAny]
+    # def get(self, request):
+    #     storages = UnitStorage.objects.all()
+    #     data = {}
+    #     for storage in storages:
+    #         data[storage.unit_type.name] = storage.quantity
+    #     return Response(data)
+        
+    def post(self, request):
+        product_code = request.data['product_code']
+        action = request.data['action']
+        product = Products.objects.get(product_code=product_code)
+        product.time_storage = datetime.datetime.now()
+        unit_type = product.unit_type
+        storage = UnitStorage.objects.get(unit_type=unit_type)
+        
+        if action == 'ADD':
+            storage.quantity += 1
+        elif action == 'RETRIEVE':
+            storage.quantity -= 1
+        storage.save()
+        
+        storages = UnitStorage.objects.all()
+        data = {}
+        for i in storages:
+            data[i.unit_type.name] = i.quantity
+        return Response(data)

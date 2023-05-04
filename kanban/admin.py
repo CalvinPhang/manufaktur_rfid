@@ -8,6 +8,18 @@ class UnitAdmin(admin.ModelAdmin):
         "name", 
     )
 
+@admin.register(models.UnitStorage)
+class UnitStorageAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "unit_name",
+        "quantity"
+    )
+    
+    @admin.display(ordering='unit_type__name', description='Unit Type')
+    def unit_name(self, obj):
+        return obj.unit_type.name
+
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = (

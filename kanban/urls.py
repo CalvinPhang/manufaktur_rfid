@@ -12,4 +12,9 @@ urlpatterns = [
     
     path('assy2', views.assy2),
     path('assy2/img', views.Assy2Instruction.as_view()),
+    
+    path('inspection', views.inspection),
+    path('inspection/img', views.InspectionInstruction.as_view()),
+    
+    path('storage', views.StorageView.as_view()),
 ]

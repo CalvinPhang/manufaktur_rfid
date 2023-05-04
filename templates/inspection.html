@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <title>Barcode</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  </head>
+  <body>
+    <img src="" id="image">
+  </body>
+</html>
+
+<script>
+    function updateIntructionImage(endpoint, id) {
+        $.ajax({
+        method: "GET",
+        url: endpoint,
+        success: function(data) {
+            var img = document.getElementById(id);
+            if (img.src != data.img) {
+                img.src = data.img;
+            }
+        },
+        error: function(error_data) {
+            console.log(error_data);
+        }
+        })    
+    }
+    setInterval(function(){
+        updateIntructionImage('/kanban/inspection/img', 'image');
+    }, 1000);
+        
+</script>
