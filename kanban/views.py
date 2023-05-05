@@ -28,10 +28,6 @@ class OrderPost(APIView):
             parts_inventory = PartsInventory.objects.get(part_type=part.part_type)
             if parts_inventory.quantity - part.part_quantity < 0:
                 return Response({'msg': "Parts not sufficient"})
-        for part in parts:
-            parts_inventory = PartsInventory.objects.get(part_type=part.part_type)
-            parts_inventory.quantity = parts_inventory.quantity - part.part_quantity
-            parts_inventory.save()
             
         # Create Order  
         order = Order(
@@ -66,6 +62,9 @@ class BomProduct(APIView):
         parts = UnitPartsBom.objects.filter(unit_type=product.unit_type)
         data = {}
         for part in parts:
+            parts_inventory = PartsInventory.objects.get(part_type=part.part_type)
+            parts_inventory.quantity = parts_inventory.quantity - part.part_quantity
+            parts_inventory.save()
             data[part.part_type.name] = part.part_quantity
         return Response(data)
 
