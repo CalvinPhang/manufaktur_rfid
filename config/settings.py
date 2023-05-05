@@ -28,7 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "10.250.243.43"]
 
-ASSET_ROOT = os.path.join(BASE_DIR, 'asset/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # media directory in the root directory
+MEDIA_URL = '/media/'
 
 # Application definition
 

@@ -85,17 +85,17 @@ class Assy1Instruction(APIView):
         unit_type = product.unit_type.name
         if unit_type == "X":
             station = Station.objects.get(name='Assembly 1')
-            station.instruction = settings.ASSET_ROOT + 'X_assy1.png'
+            station.instruction = '/media/X_assy1.png'
             station.save()
             return Response({"msg": "success"})
         elif unit_type == "Y":
             station = Station.objects.get(name='Assembly 1')
-            station.instruction = settings.ASSET_ROOT + 'Y_assy1.png'
+            station.instruction = '/media/Y_assy1.png'
             station.save()
             return Response({"msg": "success"})
         elif unit_type == "Z":
             station = Station.objects.get(name='Assembly 1')
-            station.instruction = settings.ASSET_ROOT + 'Z_assy1.png'
+            station.instruction = '/media/Z_assy1.png'
             station.save()
             return Response({"msg": "success"})
 
@@ -115,17 +115,17 @@ class Assy2Instruction(APIView):
         unit_type = product.unit_type.name
         if unit_type == "X":
             station = Station.objects.get(name='Assembly 2')
-            station.instruction = settings.ASSET_ROOT + 'X_assy2.png'
+            station.instruction = '/media/X_assy2.png'
             station.save()
             return Response({"msg": "success"})
         elif unit_type == "Y":
             station = Station.objects.get(name='Assembly 2')
-            station.instruction = settings.ASSET_ROOT + 'Y_assy2.png'
+            station.instruction = '/media/Y_assy2.png'
             station.save()
             return Response({"msg": "success"})
         elif unit_type == "Z":
             station = Station.objects.get(name='Assembly 2')
-            station.instruction = settings.ASSET_ROOT + 'Z_assy2.png'
+            station.instruction = '/media/Z_assy2.png'
             station.save()
             return Response({"msg": "success"})
 
@@ -145,28 +145,22 @@ class InspectionInstruction(APIView):
         unit_type = product.unit_type.name
         if unit_type == "X":
             station = Station.objects.get(name='Inspection')
-            station.instruction = settings.ASSET_ROOT + 'X_inspection.png'
+            station.instruction = '/media/X_inspection.png'
             station.save()
             return Response({"msg": "success"})
         elif unit_type == "Y":
             station = Station.objects.get(name='Inspection')
-            station.instruction = settings.ASSET_ROOT + 'Y_inspection.png'
+            station.instruction = '/media/Y_inspection.png'
             station.save()
             return Response({"msg": "success"})
         elif unit_type == "Z":
             station = Station.objects.get(name='Inspection')
-            station.instruction = settings.ASSET_ROOT + 'Z_inspection.png'
+            station.instruction = '/media/Z_inspection.png'
             station.save()
             return Response({"msg": "success"})
 
 class StorageView(APIView):
     permission_classes = [AllowAny]
-    # def get(self, request):
-    #     storages = UnitStorage.objects.all()
-    #     data = {}
-    #     for storage in storages:
-    #         data[storage.unit_type.name] = storage.quantity
-    #     return Response(data)
         
     def post(self, request):
         product_code = request.data['product_code']
@@ -178,7 +172,7 @@ class StorageView(APIView):
         
         if action == 'ADD':
             storage.quantity += 1
-        elif action == 'RETRIEVE':
+        elif action == 'DEDUCT':
             storage.quantity -= 1
         storage.save()
         
