@@ -82,7 +82,7 @@ class ProductAdmin(admin.ModelAdmin):
         "time_assy1",
         "time_assy2",
         "time_storage",
-        "sent",
+        "time_delivered",
     )
     
     @admin.display(ordering='unit_type__name', description='Unit Type')

@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
-from .models import Order, UnitType, PartsInventory, UnitPartsBom, Products, Station, UnitStorage
+from .models import Order, UnitType, PartsInventory, UnitPartsBom, Products, Station, UnitStorage, PartType
 
 def order_input(request):
     return render(request, 'barcode_order.html')
@@ -59,8 +59,28 @@ class BomProduct(APIView):
         product = Products.objects.get(product_code=product_code)
         product.time_warehouse = datetime.datetime.now()
         product.save()
+        station = Station.objects.get(name='Warehouse')
+        station.instruction = product.unit_type.name
+        station.save()
         parts = UnitPartsBom.objects.filter(unit_type=product.unit_type)
         data = {}
+        for part in parts:
+            parts_inventory = PartsInventory.objects.get(part_type=part.part_type)
+            parts_inventory.quantity = parts_inventory.quantity - part.part_quantity
+            parts_inventory.save()
+            data[part.part_type.name] = part.part_quantity
+        return Response(data)
+    
+class BomDisplay(APIView):
+    permission_classes = [AllowAny]
+    def get(self, request, *args, **kwargs):
+        ref_part = PartType.objects.all()
+        station = Station.objects.get(name='Warehouse')
+        unit = UnitType.objects.get(name=station.instruction)
+        parts = UnitPartsBom.objects.filter(unit_type=unit)
+        data = {}
+        for part in ref_part:
+            data[part.name] = 0
         for part in parts:
             parts_inventory = PartsInventory.objects.get(part_type=part.part_type)
             parts_inventory.quantity = parts_inventory.quantity - part.part_quantity
@@ -81,6 +101,7 @@ class Assy1Instruction(APIView):
         product_code = request.data['product_code']
         product = Products.objects.get(product_code=product_code)
         product.time_assy1 = datetime.datetime.now()
+        product.save()
         unit_type = product.unit_type.name
         if unit_type == "X":
             station = Station.objects.get(name='Assembly 1')
@@ -111,6 +132,7 @@ class Assy2Instruction(APIView):
         product_code = request.data['product_code']
         product = Products.objects.get(product_code=product_code)
         product.time_assy2 = datetime.datetime.now()
+        product.save()
         unit_type = product.unit_type.name
         if unit_type == "X":
             station = Station.objects.get(name='Assembly 2')
@@ -141,6 +163,7 @@ class InspectionInstruction(APIView):
         product_code = request.data['product_code']
         product = Products.objects.get(product_code=product_code)
         product.time_inspection = datetime.datetime.now()
+        product.save()
         unit_type = product.unit_type.name
         if unit_type == "X":
             station = Station.objects.get(name='Inspection')
@@ -158,23 +181,50 @@ class InspectionInstruction(APIView):
             station.save()
             return Response({"msg": "success"})
 
-class StorageView(APIView):
+class StoreView(APIView):
     permission_classes = [AllowAny]
         
     def post(self, request):
         product_code = request.data['product_code']
-        action = request.data['action']
         product = Products.objects.get(product_code=product_code)
         product.time_storage = datetime.datetime.now()
+        product.save()
         unit_type = product.unit_type
-        storage = UnitStorage.objects.get(unit_type=unit_type)
         
-        if action == 'ADD':
-            storage.quantity += 1
-        elif action == 'DEDUCT':
-            storage.quantity -= 1
+        storage = UnitStorage.objects.get(unit_type=unit_type)
+        storage.quantity += 1
         storage.save()
         
+        storages = UnitStorage.objects.all()
+        data = {}
+        for i in storages:
+            data[i.unit_type.name] = i.quantity
+        return Response(data)
+    
+class DeliverView(APIView):
+    permission_classes = [AllowAny]
+        
+    def post(self, request):
+        product_code = request.data['product_code']
+        product = Products.objects.get(product_code=product_code)
+        product.time_delivered = datetime.datetime.now()
+        product.save()
+        unit_type = product.unit_type
+        
+        storage = UnitStorage.objects.get(unit_type=unit_type)
+        storage.quantity -= 1
+        storage.save()
+        
+        storages = UnitStorage.objects.all()
+        data = {}
+        for i in storages:
+            data[i.unit_type.name] = i.quantity
+        return Response(data)
+    
+class StorageView(APIView):
+    permission_classes = [AllowAny]
+        
+    def get(self, request):
         storages = UnitStorage.objects.all()
         data = {}
         for i in storages:

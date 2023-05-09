@@ -45,7 +45,7 @@ class Products(models.Model):
     time_assy2 = models.DateTimeField(null=True, blank=True)
     time_inspection = models.DateTimeField(null=True, blank=True)
     time_storage = models.DateTimeField(null=True, blank=True)
-    sent = models.DateTimeField(null=True, blank=True)
+    time_delivered = models.DateTimeField(null=True, blank=True)
     
 class Station(models.Model):
     name = models.CharField(max_length=200)
