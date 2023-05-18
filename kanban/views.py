@@ -230,3 +230,66 @@ class StorageView(APIView):
         for i in storages:
             data[i.unit_type.name] = i.quantity
         return Response(data)
+
+class LeadWarehouseView(APIView):
+    permission_classes = [AllowAny]
+    
+    def get(self, request):
+        products = Products.objects.filter(time_assy1__isnull=False)
+        total_product = len(products)
+        total_warehouse_time = datetime.timedelta(seconds=0)
+        print(total_product)
+        for product in products:
+            total_warehouse_time += product.time_assy1 - product.time_warehouse
+        warehouse_time = total_warehouse_time/total_product
+        return Response({"warehouse": warehouse_time.total_seconds()})
+
+class LeadAssy1View(APIView):
+    permission_classes = [AllowAny]
+    
+    def get(self, request):
+        products = Products.objects.filter(time_assy2__isnull=False)
+        total_product = len(products)
+        total_assy1_time = datetime.timedelta(seconds=0)
+        for product in products:
+            total_assy1_time += product.time_assy1 - product.time_warehouse
+        assy1_time = total_assy1_time/total_product
+        return Response({"assy1": assy1_time.total_seconds()})
+
+class LeadAssy2View(APIView):
+    permission_classes = [AllowAny]
+    
+    def get(self, request):
+        products = Products.objects.filter(time_storage__isnull=False)
+        total_product = len(products)
+        total_warehouse_time = datetime.timedelta(seconds=0)
+        for product in products:
+            total_warehouse_time = product.time_assy1 - product.time_warehouse
+        warehouse_time = total_warehouse_time/total_product
+        return Response({"assy2": warehouse_time.total_seconds()})
+
+class LeadStorageView(APIView):
+    permission_classes = [AllowAny]
+    
+    def get(self, request):
+        products = Products.objects.filter(time_delivered__isnull=False)
+        total_product = len(products)
+        total_warehouse_time = datetime.timedelta(seconds=0)
+        for product in products:
+            total_warehouse_time = product.time_assy1 - product.time_warehouse
+        warehouse_time = total_warehouse_time/total_product
+        return Response({"storage": warehouse_time.total_seconds()})
+
+class LeadProductionView(APIView):
+    permission_classes = [AllowAny]
+    
+    def get(self, request):
+        products = Products.objects.filter(time_delivered__isnull=False)
+        total_product = len(products)
+        total_warehouse_time = datetime.timedelta(seconds=0)
+        for product in products:
+            total_warehouse_time = product.time_delivered - product.time_warehouse
+        warehouse_time = total_warehouse_time/total_product
+        return Response({"lead_time": warehouse_time.total_seconds()})
+
+        

@@ -21,4 +21,10 @@ urlpatterns = [
     path('store', views.StoreView.as_view()),
     path('deliver', views.DeliverView.as_view()),
     path('storage', views.StorageView.as_view()),
+    
+    path('warehouse-time', views.LeadWarehouseView.as_view()),
+    path('assy1-time', views.LeadAssy1View.as_view()),
+    path('assy2-time', views.LeadAssy2View.as_view()),
+    path('storage-time', views.LeadStorageView.as_view()),
+    path('total-time', views.LeadProductionView.as_view()),
 ]
